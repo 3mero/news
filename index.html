@@ -1,131 +1,188 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Player with Playlist</title>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مشغل القنوات والفيديو والصوتيات</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
-    body {
-      background-color: #f8f9fa;
-      font-family: Arial, sans-serif;
-      transition: background-color 0.3s;
-      font-size: 16px; /* Default font size */
-    }
-    .content-frame {
-      border: 1px solid #ddd;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-      position: relative;
-      background-color: #fff;
-    }
-    .video-container {
-      position: relative;
-      width: 100%;
-      padding-top: 56.25%; /* 16:9 Aspect Ratio */
-      background-color: #000;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-    .video-container video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: 10px;
-    }
-    .controls-bar {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-    .controls-bar button {
-      margin: 5px;
-    }
-    .playlist {
-      max-height: 60vh;
-      overflow-y: auto;
-    }
-    .playlist-item {
-      cursor: pointer;
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-    }
-    .playlist-item:hover {
-      background-color: #f1f1f1;
-    }
-    .lightbulb {
-      position: absolute;
-      top: -40px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 40px;
-      height: 40px;
-      background-color: black;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    .lightbulb:after {
-      content: "";
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 10px;
-      height: 20px;
-      background-color: black;
-      border-radius: 10px;
-      transition: background-color 0.3s;
-    }
-    .dark-mode {
-      background-color: #333;
-      color: #fff;
-    }
-    .dark-mode .lightbulb {
-      background-color: white;
-    }
-    .dark-mode .lightbulb:after {
-      background-color: white;
-    }
-    .dropdown-toggle::after {
-      display: inline-block;
-      margin-left: .255em;
-      vertical-align: .255em;
-      content: "";
-      border-top: .3em solid;
-      border-right: .3em solid transparent;
-      border-bottom: 0;
-      border-left: .3em solid transparent;
-    }
-    .dropdown-menu {
-      max-height: 200px;
-      overflow-y: auto;
-    }
-  </style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  line-height: 1.6;
+  font-size: 19px;
+  color: #333;
+  max-width: 100%;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #71706e;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  line-height: 1.2;
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+  color: #fff;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+    
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-align: center;
+  position: relative;
+}
+.download-page {
+  position: absolute;
+  right: 20;
+  top: 0;
+}
+.content-frame {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+}
+video, audio, iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.controls-bar {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+.controls-bar button {
+  margin: 0 5px;
+}
+.playlist-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+.playlist-item:last-child {
+  border-bottom: none;
+}
+.edit-icon, .delete-icon, .add-icon {
+  cursor: pointer;
+  margin-left: 10px;
+}
+.edit-icon:hover, .delete-icon:hover, .add-icon:hover {
+  color: #007bff;
+}
+.dark-mode {
+  background-color: #333;
+  color: #fff;
+}
+.hidden-link {
+  display: none;
+}
+.dropdown-toggle {
+  color: #6c757d;
+}
+#total-links {
+  color: red;
+}
+#search-container {
+  position: absolute;
+  top: -60px;
+  right: 0;
+  display: flex;
+  align-items: center;
+}
+#search-container input {
+  margin-right: 10px;
+}
+#clear-all {
+  cursor: pointer;
+  font-size: 20px;
+  color: red;
+}
+#playlist {
+  max-height: 400px;
+  overflow-y: auto;
+}
+</style>
 </head>
 <body>
   <div class="container mt-4">
+    <div class="title">
+      مشغل القنوات والروابط
+      <button class="btn btn-secondary download-page" onclick="downloadPage()">تنزيل الصفحة</button>
+    </div>
     <div class="content-frame">
-      <div class="lightbulb" onclick="toggleDarkMode()"></div>
+      <div id="search-container">
+        <input type="text" id="searchInput" class="form-control" placeholder="بحث عن قناة">
+        <div id="clear-all">Xحذف الكلX</div>
+      </div>
+      <div class="lightbulb" onclick="toggleDarkMode()">🌙/☀️</div>
       <div class="row">
         <div class="col-12 col-md-8">
           <div class="video-container">
             <video id="video" controls></video>
+            <audio id="audio" controls style="display: none;"></audio>
+            <iframe id="youtube" style="display: none;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
           <div class="controls-bar mt-2">
-            <button class="btn btn-danger" id="refresh-button" onclick="refreshPage()">تحديث الصفحة</button>
-            <button class="btn btn-secondary" id="backward-button" onclick="rewindVideo()">إرجاع 15 ثانية</button>
-            <button class="btn btn-primary" id="toggle-button" onclick="toggleVideo()">تشغيل / إيقاف</button>
-            <button class="btn btn-secondary" id="forward-button" onclick="forwardVideo()">تقديم 15 ثانية</button>
-            <button class="btn btn-secondary" onclick="setZoom(100)">الحجم الأصلي</button>
-            <button class="btn btn-secondary" onclick="setZoom(125)">تكبير (125%)</button>
-            <button class="btn btn-secondary" onclick="setZoom(75)">تصغير (75%)</button>
+            <button class="btn btn-primary" onclick="refreshPage()">إعادة تحميل الصفحة</button>
+            <button class="btn btn-primary" onclick="rewindVideo()">للخلف 15 ثانية</button>
+            <button class="btn btn-primary" onclick="toggleVideo()">تشغيل/إيقاف</button>
+            <button class="btn btn-primary" onclick="forwardVideo()">تقديم 15 ثانية</button>
+            <button class="btn btn-primary" onclick="setZoom(100)">تكبير</button>
+            <button class="btn btn-primary" onclick="setZoom(75)">تصغير</button>
           </div>
         </div>
         <div class="col-12 col-md-4 mt-4 mt-md-0">
@@ -133,103 +190,421 @@
             <div class="card-header bg-primary text-white">
               قائمة التشغيل
             </div>
-<div class="playlist list-group list-group-flush">
-        <!-- قائمة التشغيل الحالية -->
-        <div class="playlist-item">
-          <a href="#" class="dropdown-toggle collapsed" data-toggle="collapse" data-target="#aljazeera-list" aria-expanded="false">قناة الجزيرة</a>
-          <div id="aljazeera-list" class="collapse">
-            <a href="#" class="list-group-item" onclick="playVideo('https://live-hls-web-aja-fa.getaj.net/AJA/01.m3u8')">1080 قناة الجزير جودة عالية</a>
-            <a href="#" class="list-group-item" onclick="playVideo('https://live-hls-web-aja-fa.getaj.net/AJA/02.m3u8')">قناة الجزيرة جودة متوسطة 720</a>
-            <a href="#" class="list-group-item" onclick="playVideo('https://live-hls-web-aja-fa.getaj.net/alternative/AJA/05.m3u8')">قناة الجزيرة جودة عادية 360</a>
-            <a href="#" class="list-group-item" onclick="playVideo('https://live-hls-web-aja-fa.getaj.net/AJA/06.m3u8')">قناة الجزيرة جودة ضعيفة 240</a>
-           <a href="#" class="list-group-item" onclick="playVideo('https://live-hls-audio-web-aja.getaj.net/VOICE-AJA/01.m3u8')">اذاعة قناة الجزيرة</a>
+            <div id="playlist" class="playlist list-group list-group-flush">
+              <!-- عناصر قائمة التشغيل سيتم إضافتها هنا -->
+            </div>
+            <button class="btn btn-primary mt-2" onclick="addChannel()">إضافة قناة</button>
+            <button class="btn btn-success mt-2" onclick="savePlaylistToFile()">حفظ قائمة التشغيل</button>
+            <input type="file" id="playlistFileInput" accept=".json,.m3u,.m3u8" onchange="loadPlaylistFromFile(event)" style="display: none;">
+            <button class="btn btn-info mt-2" onclick="document.getElementById('playlistFileInput').click();">إرفاق ملف تشغيل json + m3u/m3u8</button>
+            <input type="text" id="playlistUrlInput" class="form-control mt-2" placeholder="json أدخل رابط التشغيل بصيغة">
+            <button class="btn btn-warning mt-2" onclick="loadPlaylistFromUrl()">تحميل قائمة التشغيل من الرابط</button>
+            <div id="total-links" class="mt-2 text-center">مجموع الروابط: 0</div>
           </div>
         </div>
-        <div class="playlist-item">
-          <a href="#" class="dropdown-toggle collapsed" data-toggle="collapse" data-target="#mayadeen-list" aria-expanded="false">قناة الميادين</a>
-          <div id="mayadeen-list" class="collapse">
-            <a href="#" class="list-group-item" onclick="playVideo('https://mdnlv.cdn.octivid.com/almdn/smil:mpegts.stream.smil/chunklist_b3000000_t64NTQwcA==.m3u8')">قناة الميادين جودة 540</a>
-          </div>
-        </div>
-        <div class="playlist-item">
-          <a href="#" class="dropdown-toggle collapsed" data-toggle="collapse" data-target="#manar-list" aria-expanded="false">قناة المنار</a>
-          <div id="manar-list" class="collapse">
-            <a href="#" class="list-group-item" onclick="playVideo('https://e2.manar.live:9000/live/tracks-v1a1/mono.m3u8')">قناة المنار جودة 576</a>
-            <a href="#" class="list-group-item" onclick="playVideo('https://e2.manar.live:9000/live/tracks-v3a1/mono.m3u8')">قناة المنار جودة 236</a>
-          </div>
-        </div>
-
-          </div>
+      </div>
     </div>
-       </div>
-          </div>
-        </div>
-          </div>
+  </div>
+<script>
+  var video = document.getElementById('video');
+  var audio = document.getElementById('audio');
+  var youtube = document.getElementById('youtube');
+  var isPlaying = false;
 
-   <script>
-    var video = document.getElementById('video');
-    var isPlaying = false;
-    var hls = null;
+  function refreshPage() {
+    location.reload();
+  }
 
-    function playVideo(url) {
+  function rewindVideo() {
+    if (video.style.display !== 'none') {
+      video.currentTime -= 15;
+    } else if (audio.style.display !== 'none') {
+      audio.currentTime -= 15;
+    } else {
+      console.log("Cannot rewind YouTube videos");
+    }
+  }
+
+  function forwardVideo() {
+    if (video.style.display !== 'none') {
+      video.currentTime += 15;
+    } else if (audio.style.display !== 'none') {
+      audio.currentTime += 15;
+    } else {
+      console.log("Cannot forward YouTube videos");
+    }
+  }
+
+  function toggleVideo() {
+    if (isPlaying) {
+      if (video.style.display !== 'none') {
+        video.pause();
+      } else if (audio.style.display !== 'none') {
+        audio.pause();
+      } else {
+        youtube.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+      }
+    } else {
+      if (video.style.display !== 'none') {
+        video.play();
+      } else if (audio.style.display !== 'none') {
+        audio.play();
+      } else {
+        youtube.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+      }
+    }
+    isPlaying = !isPlaying;
+  }
+
+  function setZoom(zoom) {
+    document.body.style.zoom = zoom + '%';
+  }
+
+  function playVideo(src) {
+    var extension = src.split('.').pop().toLowerCase();
+    console.log("Playing video with src: " + src + " and extension: " + extension); // Debugging line
+    if (extension === 'm3u8') {
       if (Hls.isSupported()) {
-        if (hls) {
-          hls.destroy();
-        }
-        hls = new Hls();
-        hls.loadSource(url);
+        var hls = new Hls();
+        hls.loadSource(src);
         hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+        hls.on(Hls.Events.MANIFEST_PARSED, function () {
+          video.style.display = 'block';
+          audio.style.display = 'none';
+          youtube.style.display = 'none';
           video.play();
           isPlaying = true;
         });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = url;
-        video.addEventListener('loadedmetadata', function() {
+        video.src = src;
+        video.addEventListener('loadedmetadata', function () {
+          video.style.display = 'block';
+          audio.style.display = 'none';
+          youtube.style.display = 'none';
           video.play();
           isPlaying = true;
         });
       }
-    }
-
-    function refreshPage() {
-      location.reload();
-    }
-
-    function rewindVideo() {
-      video.currentTime = Math.max(0, video.currentTime - 15);
-    }
-
-    function forwardVideo() {
-      video.currentTime = Math.min(video.duration, video.currentTime + 15);
-    }
-
-    function toggleVideo() {
-      if (isPlaying) {
-        video.pause();
-      } else {
+    } else if (['mp4', 'webm', 'ogg'].includes(extension)) {
+      video.src = src;
+      video.addEventListener('loadedmetadata', function () {
+        video.style.display = 'block';
+        audio.style.display = 'none';
+        youtube.style.display = 'none';
         video.play();
+        isPlaying = true;
+      });
+    } else if (['mp3', 'wav', 'ogg'].includes(extension)) {
+      audio.src = src;
+      video.style.display = 'none';
+      audio.style.display = 'block';
+      youtube.style.display = 'none';
+      audio.play();
+      isPlaying = true;
+    } else if (src.includes('youtube.com') || src.includes('youtu.be')) {
+      var videoId = src.split('v=')[1] || src.split('/').pop();
+      youtube.src = "https://www.youtube.com/embed/" + videoId + "?enablejsapi=1";
+      video.style.display = 'none';
+      audio.style.display = 'none';
+      youtube.style.display = 'block';
+    } else {
+      console.error("Unsupported file extension: " + extension); // Debugging line
+    }
+  }
+
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+  }
+
+  function deleteChannel(element) {
+    if (confirm('هل أنت متأكد أنك تريد حذف هذه القناة؟')) {
+      var item = element.closest('.playlist-item');
+      item.remove();
+      savePlaylist();
+      updateTotalLinks();
+    }
+  }
+
+  function editLink(element) {
+    var linkItem = element.closest('.list-group-item');
+    var newLink = prompt('أدخل الرابط الجديد:', linkItem.querySelector('.hidden-link').innerText);
+    if (newLink) {
+      linkItem.querySelector('.hidden-link').innerText = newLink;
+      linkItem.setAttribute('onclick', `playVideo('${newLink}')`);
+      savePlaylist();
+    }
+  }
+
+  function editLinkName(element) {
+    var linkItem = element.closest('.list-group-item');
+    var newLinkName = prompt('أدخل اسم الرابط الجديد:', linkItem.querySelector('.link-name').innerText);
+    if (newLinkName) {
+      linkItem.querySelector('.link-name').innerText = newLinkName;
+      savePlaylist();
+    }
+  }
+
+  function editChannelName(element) {
+    var item = element.closest('.playlist-item');
+    var newName = prompt('أدخل اسم القناة الجديد:', item.getAttribute('data-channel'));
+    if (newName) {
+      var channelLink = item.querySelector('.dropdown-toggle');
+      channelLink.innerText = newName;
+      item.setAttribute('data-channel', newName);
+      var channelList = item.querySelector('.collapse');
+      channelList.id = newName + '-list';
+      channelLink.setAttribute('data-target', '#' + newName + '-list');
+      savePlaylist();
+    }
+  }
+
+  function addLink(element) {
+    var item = element.closest('.playlist-item');
+    var channelName = item.getAttribute('data-channel');
+    var newLink = prompt('أدخل الرابط الجديد:');
+    var newLinkName = prompt('أدخل اسم للرابط او الجودة:');
+    if (newLink && newLinkName) {
+      var newLinkItem = document.createElement('a');
+      newLinkItem.href = '#';
+      newLinkItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+      newLinkItem.innerHTML = `
+        <span class="link-name">${newLinkName}</span>
+        <span class="hidden-link">${newLink}</span>
+        <div>
+          <div class="edit-icon" onclick="editLinkName(this)">🖋️</div>
+          <div class="edit-icon" onclick="editLink(this)">🖋️</div>
+          <div class="delete-icon" onclick="deleteLink(this)">❎</div>
+        </div>
+      `;
+      newLinkItem.setAttribute('onclick', `playVideo('${newLink}')`);
+      item.querySelector('.collapse').appendChild(newLinkItem);
+      savePlaylist();
+      updateTotalLinks();
+    }
+  }
+
+  function deleteLink(element) {
+    if (confirm('هل أنت متأكد أنك تريد حذف هذا الرابط؟')) {
+      var linkItem = element.closest('.list-group-item');
+      linkItem.remove();
+      savePlaylist();
+      updateTotalLinks();
+    }
+  }
+
+  function addChannel() {
+    var newChannelName = prompt('أدخل اسم القناة الجديدة:');
+    if (newChannelName) {
+      var newChannel = document.createElement('div');
+      newChannel.classList.add('playlist-item');
+      newChannel.setAttribute('data-channel', newChannelName);
+      var newChannelId = 'channel-' + new Date().getTime(); // Ensure unique ID
+      newChannel.innerHTML = `
+        <div style="flex-grow: 1;">
+          <a href="#" class="dropdown-toggle collapsed" data-toggle="collapse" data-target="#${newChannelId}-list" aria-expanded="false">
+            ${newChannelName} (0 روابط)
+          </a>
+        </div>
+        <div>
+          <div class="edit-icon" onclick="editChannelName(this)">✏️</div>
+          <div class="add-icon" onclick="addLink(this)">➕</div>
+          <div class="delete-icon" onclick="deleteChannel(this)">❌</div>
+        </div>
+        <div class="collapse" id="${newChannelId}-list">
+          <!-- الروابط سيتم إضافتها هنا -->
+        </div>
+      `;
+      document.getElementById('playlist').appendChild(newChannel);
+      savePlaylist();
+    }
+  }
+
+  function savePlaylist() {
+    var playlist = [];
+    document.querySelectorAll('.playlist-item').forEach(function (item) {
+      var channel = {
+        name: item.getAttribute('data-channel'),
+        links: []
+      };
+      item.querySelectorAll('.list-group-item').forEach(function (linkItem) {
+        channel.links.push({
+          name: linkItem.querySelector('.link-name').innerText,
+          url: linkItem.querySelector('.hidden-link').innerText
+        });
+      });
+      playlist.push(channel);
+    });
+    localStorage.setItem('playlist', JSON.stringify(playlist));
+    updateTotalLinks();
+  }
+
+  function savePlaylistToFile() {
+    var playlist = localStorage.getItem('playlist');
+    var blob = new Blob([playlist], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    var fileName = prompt('أدخل اسم ملف التشغيل:', 'playlist.json');
+    if (fileName) {
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+  }
+
+  function loadPlaylistFromFile(event) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      var content = e.target.result;
+      if (file.name.endsWith('.json')) {
+        localStorage.setItem('playlist', content);
+        location.reload();
+      } else if (file.name.endsWith('.m3u') || file.name.endsWith('.m3u8')) {
+        parseM3U(content);
       }
-      isPlaying = !isPlaying;
-    }
-    
-    function setZoom(zoomPercentage) {
-      document.body.style.fontSize = (zoomPercentage / 100) + "em";
-    }
+    };
+    reader.readAsText(file);
+  }
 
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
-    }
+  function loadPlaylistFromUrl() {
+    var url = document.getElementById('playlistUrlInput').value;
+    fetch(url)
+      .then(response => response.text())
+      .then(data => {
+        if (url.endsWith('.json')) {
+          localStorage.setItem('playlist', data);
+          location.reload();
+        } else if (url.endsWith('.m3u') || url.endsWith('.m3u8')) {
+          parseM3U(data);
+        }
+      })
+      .catch(error => console.error('Error loading playlist:', error));
+  }
 
-    window.addEventListener('load', function() {
-      var firstLink = document.querySelector('.playlist-item a');
-      if (firstLink) {
-        firstLink.click();
+  function parseM3U(content) {
+    var lines = content.split('\n');
+    var playlist = [];
+    var currentChannel = null;
+
+    lines.forEach(line => {
+      line = line.trim();
+      if (line.startsWith('#EXTINF:')) {
+        var channelInfo = line.split(',')[1];
+        currentChannel = {
+          name: channelInfo,
+          links: []
+        };
+      } else if (line && currentChannel) {
+        currentChannel.links.push({
+          name: 'Link',
+          url: line
+        });
+        playlist.push(currentChannel);
+        currentChannel = null;
       }
     });
-  </script>
+
+    var existingPlaylist = JSON.parse(localStorage.getItem('playlist') || '[]');
+    playlist = existingPlaylist.concat(playlist);
+    localStorage.setItem('playlist', JSON.stringify(playlist));
+    location.reload();
+  }
+
+  function loadPlaylist() {
+    var playlist = JSON.parse(localStorage.getItem('playlist') || '[]');
+    playlist.forEach(function (channel) {
+      var newChannel = document.createElement('div');
+      newChannel.classList.add('playlist-item');
+      newChannel.setAttribute('data-channel', channel.name);
+      var newChannelId = 'channel-' + new Date().getTime(); // Ensure unique ID
+      newChannel.innerHTML = `
+        <div style="flex-grow: 1;">
+          <a href="#" class="dropdown-toggle collapsed" data-toggle="collapse" data-target="#${newChannelId}-list" aria-expanded="false">
+            ${channel.name} (${channel.links.length} روابط)
+          </a>
+        </div>
+        <div>
+          <div class="edit-icon" onclick="editChannelName(this)">✏️</div>
+          <div class="add-icon" onclick="addLink(this)">➕</div>
+          <div class="delete-icon" onclick="deleteChannel(this)">❌</div>
+        </div>
+        <div class="collapse" id="${newChannelId}-list">
+          ${channel.links.map(link => `
+            <a href="#" class="list-group-item d-flex justify-content-between align-items-center" onclick="playVideo('${link.url}')">
+              <span class="link-name">${link.name}</span>
+              <span class="hidden-link">${link.url}</span>
+              <div>
+                <div class="edit-icon" onclick="editLinkName(this)">🖋️</div>
+                <div class="edit-icon" onclick="editLink(this)">🖋️</div>
+                <div class="delete-icon" onclick="deleteLink(this)">❎</div>
+              </div>
+            </a>
+          `).join('')}
+        </div>
+      `;
+      document.getElementById('playlist').appendChild(newChannel);
+    });
+    updateTotalLinks();
+  }
+
+  function updateTotalLinks() {
+    var totalLinks = 0;
+    document.querySelectorAll('.playlist-item .list-group-item').forEach(function () {
+      totalLinks++;
+    });
+    document.getElementById('total-links').innerText = 'مجموع الروابط: ' + totalLinks;
+  }
+
+  function clearAllChannels() {
+    if (confirm('هل أنت متأكد أنك تريد حذف جميع القنوات؟')) {
+      localStorage.removeItem('playlist');
+      location.reload();
+    }
+  }
+
+  function filterChannels() {
+    var input = document.getElementById('searchInput');
+    var filter = input.value.toLowerCase();
+    var channels = document.querySelectorAll('.playlist-item');
+
+    channels.forEach(function (channel) {
+      var channelName = channel.getAttribute('data-channel').toLowerCase();
+      if (channelName.indexOf(filter) > -1) {
+        channel.style.display = '';
+      } else {
+        channel.style.display = 'none';
+      }
+    });
+  }
+
+  function downloadPage() {
+    var htmlContent = document.documentElement.outerHTML;
+    var blob = new Blob([htmlContent], { type: 'text/html' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    var fileName = prompt('أدخل اسم الملف:', 'page.html');
+    if (fileName) {
+      a.href = url;
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark-mode');
+    }
+    loadPlaylist();
+
+    document.getElementById('searchInput').addEventListener('keyup', filterChannels);
+    document.getElementById('clear-all').addEventListener('click', clearAllChannels);
+  });
+</script>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
