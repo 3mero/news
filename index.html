@@ -3,159 +3,226 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>مشغل القنوات والفيديو والصوتيات</title>
+  <title>مشغل القنوات والفيديو والصوتيات واليوتيوب</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdn.plyr.io/3.6.8/plyr.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="https://cdn.plyr.io/3.6.8/plyr.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+  <script src="https://vjs.zencdn.net/7.10.2/video.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
   <style>
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  line-height: 1.6;
-  font-size: 19px;
-  color: #333;
-  max-width: 100%;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      line-height: 1.6;
+      font-size: 19px;
+      color: #333;
+      max-width: 100%;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #71706e;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 0;
+      line-height: 1.2;
+    }
+
+    p {
+      margin: 0 0 1em;
+    }
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    button {
+      font-family: inherit;
+      font-size: inherit;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+      color: #fff;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      text-align: center;
+      position: relative;
+    }
+
+    .download-page {
+      position: absolute;
+      right: 20;
+      top: 0;
+    }
+
+    .content-frame {
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 8px;
+      background-color: #36454F;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    .video-container {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+    }
+
+    .plyr__video-embed {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    video, audio, iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .controls-bar {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .controls-bar button {
+      margin: 0 5px;
+    }
+
+    .playlist-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .playlist-item:last-child {
+      border-bottom: none;
+    }
+
+    .edit-icon, .delete-icon, .add-icon {
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .edit-icon:hover, .delete-icon:hover, .add-icon:hover {
+      color: #007bff;
+    }
+
+    .dark-mode {
+      background-color: #333;
+      color: #fff;
+    }
+
+    .hidden-link {
+      display: none;
+    }
+
+    .dropdown-toggle {
+      color: #6c757d;
+    }
+
+    #total-links {
+      color: red;
+    }
+
+    #search-container {
+      position: absolute;
+      top: -60px;
+      right: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    #search-container input {
+      margin-right: 10px;
+    }
+
+    #clear-all {
+      cursor: pointer;
+      font-size: 20px;
+      color: red;
+    }
+
+    #playlist {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .channel-item {
+  margin-bottom: 5px;
 }
 
-.container {
-  max-width: 1500px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #71706e;
+.channel-content {
+  display: none;
+  margin-left: 20px;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  margin-top: 0;
-  line-height: 1.2;
-}
-
-p {
-  margin: 0 0 1em;
-}
-
-a {
-  color: #007bff;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-button {
-  font-family: inherit;
-  font-size: inherit;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
-  color: #fff;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
+.channel-content .list-group-item {
+  padding: 5px 15px;
 }
     
-.title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 30px;
-  text-align: center;
-  position: relative;
-}
-.download-page {
-  position: absolute;
-  right: 20;
-  top: 0;
-}
-.content-frame {
-  border: 1px solid #ccc;
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #36454F;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  position: relative;
-}
-.video-container {
-  position: relative;
+    #footer-text {
+  position: fixed;
+  bottom: 0;
   width: 100%;
-  padding-top: 56.25%;
-}
-video, audio, iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-.controls-bar {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-}
-.controls-bar button {
-  margin: 0 5px;
-}
-.playlist-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-}
-.playlist-item:last-child {
-  border-bottom: none;
-}
-.edit-icon, .delete-icon, .add-icon {
-  cursor: pointer;
-  margin-left: 10px;
-}
-.edit-icon:hover, .delete-icon:hover, .add-icon:hover {
-  color: #007bff;
-}
-.dark-mode {
   background-color: #333;
   color: #fff;
+  text-align: center;
+  padding: 10px;
+  font-size: 16px;
+  transition: all 0.5s ease-in-out;
 }
-.hidden-link {
-  display: none;
+
+#footer-text:hover {
+  opacity: 0;
+  transform: translateY(20px);
 }
-.dropdown-toggle {
-  color: #6c757d;
-}
-#total-links {
-  color: red;
-}
-#search-container {
-  position: absolute;
-  top: -60px;
-  right: 0;
-  display: flex;
-  align-items: center;
-}
-#search-container input {
-  margin-right: 10px;
-}
-#clear-all {
-  cursor: pointer;
-  font-size: 20px;
-  color: red;
-}
-#playlist {
-  max-height: 400px;
-  overflow-y: auto;
-}
-</style>
+
+  </style>
 </head>
 <body>
   <div class="container mt-4">
@@ -166,7 +233,7 @@ video, audio, iframe {
     <div class="content-frame">
       <div id="search-container">
         <input type="text" id="searchInput" class="form-control" placeholder="بحث عن قناة">
-        <div id="clear-all">Xحذف الكلX</div>
+        <div id="clear-all">حذف الكلX</div>
       </div>
       <div class="lightbulb" onclick="toggleDarkMode()">🌙/☀️</div>
       <div class="row">
@@ -186,12 +253,23 @@ video, audio, iframe {
           </div>
         </div>
         <div class="col-12 col-md-4 mt-4 mt-md-0">
-          <div class="card">
+          <div class="card mb-3">
             <div class="card-header bg-primary text-white">
-              قائمة التشغيل
+              قائمة القنوات
             </div>
-            <div id="playlist" class="playlist list-group list-group-flush">
-              <!-- عناصر قائمة التشغيل سيتم إضافتها هنا -->
+            <div id="channelList" class="list-group list-group-flush">
+              <!-- سيتم إضافة أسماء القنوات هنا -->
+            </div>
+          </div>
+          <button class="btn btn-secondary mt-2" onclick="togglePlaylist()">إظهار/إخفاء قائمة التشغيل الكاملة</button>
+          <div id="fullPlaylist" style="display:none;">
+            <div class="card mt-3">
+              <div class="card-header bg-primary text-white">
+                قائمة التشغيل الكاملة
+              </div>
+              <div id="playlist" class="playlist list-group list-group-flush">
+                <!-- عناصر قائمة التشغيل الكاملة ستبقى هنا -->
+              </div>
             </div>
             <button class="btn btn-primary mt-2" onclick="addChannel()">إضافة قناة</button>
             <button class="btn btn-success mt-2" onclick="savePlaylistToFile()">حفظ قائمة التشغيل</button>
@@ -205,77 +283,96 @@ video, audio, iframe {
       </div>
     </div>
   </div>
+<div id="footer-text">
+  Editor by .. Omar K H
+</div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
 <script>
-  var video = document.getElementById('video');
-  var audio = document.getElementById('audio');
-  var youtube = document.getElementById('youtube');
-  var isPlaying = false;
+    var video = document.getElementById('video');
+    var audio = document.getElementById('audio');
+    var youtube = document.getElementById('youtube');
+    var isPlaying = false;
 
-  function refreshPage() {
-    location.reload();
-  }
-
-  function rewindVideo() {
-    if (video.style.display !== 'none') {
-      video.currentTime -= 15;
-    } else if (audio.style.display !== 'none') {
-      audio.currentTime -= 15;
-    } else {
-      console.log("Cannot rewind YouTube videos");
+    function refreshPage() {
+      location.reload();
     }
-  }
 
-  function forwardVideo() {
-    if (video.style.display !== 'none') {
-      video.currentTime += 15;
-    } else if (audio.style.display !== 'none') {
-      audio.currentTime += 15;
-    } else {
-      console.log("Cannot forward YouTube videos");
-    }
-  }
-
-  function toggleVideo() {
-    if (isPlaying) {
+    function rewindVideo() {
       if (video.style.display !== 'none') {
-        video.pause();
+        video.currentTime -= 15;
       } else if (audio.style.display !== 'none') {
-        audio.pause();
+        audio.currentTime -= 15;
       } else {
-        youtube.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-      }
-    } else {
-      if (video.style.display !== 'none') {
-        video.play();
-      } else if (audio.style.display !== 'none') {
-        audio.play();
-      } else {
-        youtube.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        console.log("Cannot rewind YouTube videos");
       }
     }
-    isPlaying = !isPlaying;
-  }
 
-  function setZoom(zoom) {
-    document.body.style.zoom = zoom + '%';
-  }
+    function forwardVideo() {
+      if (video.style.display !== 'none') {
+        video.currentTime += 15;
+      } else if (audio.style.display !== 'none') {
+        audio.currentTime += 15;
+      } else {
+        console.log("Cannot forward YouTube videos");
+      }
+    }
 
-  function playVideo(src) {
-    var extension = src.split('.').pop().toLowerCase();
-    console.log("Playing video with src: " + src + " and extension: " + extension); // Debugging line
-    if (extension === 'm3u8') {
-      if (Hls.isSupported()) {
-        var hls = new Hls();
-        hls.loadSource(src);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, function () {
-          video.style.display = 'block';
-          audio.style.display = 'none';
-          youtube.style.display = 'none';
+    function toggleVideo() {
+      if (isPlaying) {
+        if (video.style.display !== 'none') {
+          video.pause();
+        } else if (audio.style.display !== 'none') {
+          audio.pause();
+        } else {
+          youtube.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        }
+      } else {
+        if (video.style.display !== 'none') {
           video.play();
-          isPlaying = true;
-        });
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        } else if (audio.style.display !== 'none') {
+          audio.play();
+        } else {
+          youtube.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        }
+      }
+      isPlaying = !isPlaying;
+    }
+
+    function setZoom(zoom) {
+      document.body.style.zoom = zoom + '%';
+    }
+
+    function playVideo(src) {
+      var extension = src.split('.').pop().toLowerCase();
+      console.log("Playing video with src: " + src + " and extension: " + extension);
+      if (extension === 'm3u8') {
+        if (Hls.isSupported()) {
+          var hls = new Hls();
+          hls.loadSource(src);
+          hls.attachMedia(video);
+          hls.on(Hls.Events.MANIFEST_PARSED, function () {
+            video.style.display = 'block';
+            audio.style.display = 'none';
+            youtube.style.display = 'none';
+            video.play();
+            isPlaying = true;
+          });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = src;
+          video.addEventListener('loadedmetadata', function () {
+            video.style.display = 'block';
+            audio.style.display = 'none';
+            youtube.style.display = 'none';
+            video.play();
+            isPlaying = true;
+          });
+        }
+      } else if (['mp4', 'webm', 'ogg'].includes(extension)) {
         video.src = src;
         video.addEventListener('loadedmetadata', function () {
           video.style.display = 'block';
@@ -284,294 +381,385 @@ video, audio, iframe {
           video.play();
           isPlaying = true;
         });
-      }
-    } else if (['mp4', 'webm', 'ogg'].includes(extension)) {
-      video.src = src;
-      video.addEventListener('loadedmetadata', function () {
-        video.style.display = 'block';
-        audio.style.display = 'none';
+      } else if (['mp3', 'wav', 'ogg'].includes(extension)) {
+        audio.src = src;
+        video.style.display = 'none';
+        audio.style.display = 'block';
         youtube.style.display = 'none';
-        video.play();
+        audio.play();
         isPlaying = true;
-      });
-    } else if (['mp3', 'wav', 'ogg'].includes(extension)) {
-      audio.src = src;
-      video.style.display = 'none';
-      audio.style.display = 'block';
-      youtube.style.display = 'none';
-      audio.play();
-      isPlaying = true;
-    } else if (src.includes('youtube.com') || src.includes('youtu.be')) {
-      var videoId = src.split('v=')[1] || src.split('/').pop();
-      youtube.src = "https://www.youtube.com/embed/" + videoId + "?enablejsapi=1";
-      video.style.display = 'none';
-      audio.style.display = 'none';
-      youtube.style.display = 'block';
-    } else {
-      console.error("Unsupported file extension: " + extension); // Debugging line
+      } else if (src.includes('youtube.com') || src.includes('youtu.be')) {
+        var videoId = src.split('v=')[1] || src.split('/').pop();
+        youtube.src = "https://www.youtube.com/embed/" + videoId + "?enablejsapi=1";
+        video.style.display = 'none';
+        audio.style.display = 'none';
+        youtube.style.display = 'block';
+      } else {
+        console.error("Unsupported file extension: " + extension);
+      }
     }
-  }
 
-  function toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
-    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-  }
-
-  function deleteChannel(element) {
-    if (confirm('هل أنت متأكد أنك تريد حذف هذه القناة؟')) {
-      var item = element.closest('.playlist-item');
-      item.remove();
-      savePlaylist();
-      updateTotalLinks();
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
     }
-  }
 
-  function editLink(element) {
-    var linkItem = element.closest('.list-group-item');
-    var newLink = prompt('أدخل الرابط الجديد:', linkItem.querySelector('.hidden-link').innerText);
-    if (newLink) {
-      linkItem.querySelector('.hidden-link').innerText = newLink;
-      linkItem.setAttribute('onclick', `playVideo('${newLink}')`);
-      savePlaylist();
+    function deleteChannel(element) {
+      if (confirm('هل أنت متأكد أنك تريد حذف هذه القناة؟')) {
+        var item = element.closest('.playlist-item');
+        item.remove();
+        savePlaylist();
+        updateTotalLinks();
+      }
     }
-  }
 
-  function editLinkName(element) {
-    var linkItem = element.closest('.list-group-item');
-    var newLinkName = prompt('أدخل اسم الرابط الجديد:', linkItem.querySelector('.link-name').innerText);
-    if (newLinkName) {
-      linkItem.querySelector('.link-name').innerText = newLinkName;
-      savePlaylist();
-    }
-  }
-
-  function editChannelName(element) {
-    var item = element.closest('.playlist-item');
-    var newName = prompt('أدخل اسم القناة الجديد:', item.getAttribute('data-channel'));
-    if (newName) {
-      var channelLink = item.querySelector('.dropdown-toggle');
-      channelLink.innerText = newName;
-      item.setAttribute('data-channel', newName);
-      var channelList = item.querySelector('.collapse');
-      channelList.id = newName + '-list';
-      channelLink.setAttribute('data-target', '#' + newName + '-list');
-      savePlaylist();
-    }
-  }
-
-  function addLink(element) {
-    var item = element.closest('.playlist-item');
-    var channelName = item.getAttribute('data-channel');
-    var newLink = prompt('أدخل الرابط الجديد:');
-    var newLinkName = prompt('أدخل اسم للرابط او الجودة:');
-    if (newLink && newLinkName) {
-      var newLinkItem = document.createElement('a');
-      newLinkItem.href = '#';
-      newLinkItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
-      newLinkItem.innerHTML = `
-        <span class="link-name">${newLinkName}</span>
-        <span class="hidden-link">${newLink}</span>
-        <div>
-          <div class="edit-icon" onclick="editLinkName(this)">🖋️</div>
-          <div class="edit-icon" onclick="editLink(this)">🖋️</div>
-          <div class="delete-icon" onclick="deleteLink(this)">❎</div>
-        </div>
-      `;
-      newLinkItem.setAttribute('onclick', `playVideo('${newLink}')`);
-      item.querySelector('.collapse').appendChild(newLinkItem);
-      savePlaylist();
-      updateTotalLinks();
-    }
-  }
-
-  function deleteLink(element) {
-    if (confirm('هل أنت متأكد أنك تريد حذف هذا الرابط؟')) {
+    function editLink(element) {
       var linkItem = element.closest('.list-group-item');
-      linkItem.remove();
-      savePlaylist();
-      updateTotalLinks();
+      var newLink = prompt('أدخل الرابط الجديد:', linkItem.querySelector('.hidden-link').innerText);
+      if (newLink) {
+        linkItem.querySelector('.hidden-link').innerText = newLink;
+        linkItem.setAttribute('onclick', `playVideo('${newLink}')`);
+        savePlaylist();
+      }
     }
-  }
 
-  function addChannel() {
-    var newChannelName = prompt('أدخل اسم القناة الجديدة:');
-    if (newChannelName) {
-      var newChannel = document.createElement('div');
-      newChannel.classList.add('playlist-item');
-      newChannel.setAttribute('data-channel', newChannelName);
-      var newChannelId = 'channel-' + new Date().getTime(); // Ensure unique ID
-      newChannel.innerHTML = `
-        <div style="flex-grow: 1;">
-          <a href="#" class="dropdown-toggle collapsed" data-toggle="collapse" data-target="#${newChannelId}-list" aria-expanded="false">
-            ${newChannelName} (0 روابط)
-          </a>
-        </div>
-        <div>
-          <div class="edit-icon" onclick="editChannelName(this)">✏️</div>
-          <div class="add-icon" onclick="addLink(this)">➕</div>
-          <div class="delete-icon" onclick="deleteChannel(this)">❌</div>
-        </div>
-        <div class="collapse" id="${newChannelId}-list">
-          <!-- الروابط سيتم إضافتها هنا -->
-        </div>
-      `;
-      document.getElementById('playlist').appendChild(newChannel);
-      savePlaylist();
+    function editLinkName(element) {
+      var linkItem = element.closest('.list-group-item');
+      var newLinkName = prompt('أدخل اسم الرابط الجديد:', linkItem.querySelector('.link-name').innerText);
+      if (newLinkName) {
+        linkItem.querySelector('.link-name').innerText = newLinkName;
+        savePlaylist();
+      }
     }
-  }
 
-  function savePlaylist() {
-    var playlist = [];
-    document.querySelectorAll('.playlist-item').forEach(function (item) {
-      var channel = {
-        name: item.getAttribute('data-channel'),
-        links: []
-      };
-      item.querySelectorAll('.list-group-item').forEach(function (linkItem) {
-        channel.links.push({
-          name: linkItem.querySelector('.link-name').innerText,
-          url: linkItem.querySelector('.hidden-link').innerText
+    function editChannelName(element) {
+      var item = element.closest('.playlist-item');
+      var newName = prompt('أدخل اسم القناة الجديد:', item.getAttribute('data-channel'));
+      if (newName) {
+        var channelLink = item.querySelector('.dropdown-toggle');
+        channelLink.innerText = newName;
+        item.setAttribute('data-channel', newName);
+        var channelList = item.querySelector('.collapse');
+        channelList.id = newName + '-list';
+        channelLink.setAttribute('data-target', '#' + newName + '-list');
+        savePlaylist();
+      }
+    }
+
+    function addLink(element) {
+      var item = element.closest('.playlist-item');
+      var channelName = item.getAttribute('data-channel');
+      var newLink = prompt('أدخل الرابط الجديد:');
+      var newLinkName = prompt('أدخل اسم للرابط او الجودة:');
+      if (newLink && newLinkName) {
+        var newLinkItem = document.createElement('a');
+        newLinkItem.href = '#';
+        newLinkItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+        newLinkItem.innerHTML = `
+          <span class="link-name">${newLinkName}</span>
+          <span class="hidden-link">${newLink}</span>
+          <div>
+            <div class="edit-icon" onclick="editLinkName(this)">🖋️</div>
+            <div class="edit-icon" onclick="editLink(this)">🖋️</div>
+            <div class="delete-icon" onclick="deleteLink(this)">❎</div>
+          </div>
+        `;
+        newLinkItem.setAttribute('onclick', `playVideo('${newLink}')`);
+        item.querySelector('.collapse').appendChild(newLinkItem);
+        savePlaylist();
+        updateTotalLinks();
+      }
+    }
+
+    function deleteLink(element) {
+      if (confirm('هل أنت متأكد أنك تريد حذف هذا الرابط؟')) {
+        var linkItem = element.closest('.list-group-item');
+        linkItem.remove();
+        savePlaylist();
+        updateTotalLinks();
+      }
+    }
+
+    function addChannel() {
+      var newChannelName = prompt('أدخل اسم القناة الجديدة:');
+      if (newChannelName) {
+        var newChannel = document.createElement('div');
+        newChannel.classList.add('playlist-item');
+        newChannel.setAttribute('data-channel', newChannelName);
+        var newChannelId = 'channel-' + new Date().getTime();
+        newChannel.innerHTML = `
+          <div style="flex-grow: 1;">
+            <a href="#" class="dropdown-toggle collapsed" data-toggle="collapse" data-target="#${newChannelId}-list" aria-expanded="false">
+              ${newChannelName} (0 روابط)
+            </a>
+          </div>
+          <div>
+            <div class="edit-icon" onclick="editChannelName(this)">✏️</div>
+            <div class="add-icon" onclick="addLink(this)">➕</div>
+            <div class="delete-icon" onclick="deleteChannel(this)">❌</div>
+          </div>
+          <div class="collapse" id="${newChannelId}-list">
+            <!-- الروابط سيتم إضافتها هنا -->
+          </div>
+        `;
+        document.getElementById('playlist').appendChild(newChannel);
+        savePlaylist();
+      }
+    }
+
+    function savePlaylist() {
+      var playlist = [];
+      document.querySelectorAll('.playlist-item').forEach(function (item) {
+        var channel = {
+          name: item.getAttribute('data-channel'),
+          links: []
+        };
+        item.querySelectorAll('.list-group-item').forEach(function (linkItem) {
+          channel.links.push({
+            name: linkItem.querySelector('.link-name').innerText,
+            url: linkItem.querySelector('.hidden-link').innerText
+          });
         });
+        playlist.push(channel);
       });
-      playlist.push(channel);
-    });
-    localStorage.setItem('playlist', JSON.stringify(playlist));
-    updateTotalLinks();
-  }
+      localStorage.setItem('playlist', JSON.stringify(playlist));
+      updateTotalLinks();
+      loadPlaylist(); // Refresh the channel list
+    }
 
-  function savePlaylistToFile() {
-    var playlist = localStorage.getItem('playlist');
-    var blob = new Blob([playlist], { type: 'application/json' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    var fileName = prompt('أدخل اسم ملف التشغيل:', 'playlist.json');
-    if (fileName) {
+    function savePlaylistToFile() {
+      var playlist = localStorage.getItem('playlist');
+      var blob = new Blob([playlist], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      var fileName = prompt('أدخل اسم ملف التشغيل:', 'playlist.json');
+      if (fileName) {
         a.href = url;
         a.download = fileName;
         a.click();
         URL.revokeObjectURL(url);
-    }
-  }
-
-  function loadPlaylistFromFile(event) {
-    var file = event.target.files[0];
-    var reader = new FileReader();
-    reader.onload = function (e) {
-      var content = e.target.result;
-      if (file.name.endsWith('.json')) {
-        localStorage.setItem('playlist', content);
-        location.reload();
-      } else if (file.name.endsWith('.m3u') || file.name.endsWith('.m3u8')) {
-        parseM3U(content);
       }
-    };
-    reader.readAsText(file);
-  }
+    }
 
-  function loadPlaylistFromUrl() {
-    var url = document.getElementById('playlistUrlInput').value;
-    fetch(url)
-      .then(response => response.text())
-      .then(data => {
-        if (url.endsWith('.json')) {
-          localStorage.setItem('playlist', data);
-          location.reload();
-        } else if (url.endsWith('.m3u') || url.endsWith('.m3u8')) {
-          parseM3U(data);
+    function loadPlaylistFromFile(event) {
+      var file = event.target.files[0];
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var content = e.target.result;
+        if (file.name.endsWith('.json')) {
+          localStorage.setItem('playlist', content);
+          loadPlaylist();
+        } else if (file.name.endsWith('.m3u') || file.name.endsWith('.m3u8')) {
+          parseM3U(content);
         }
-      })
-      .catch(error => console.error('Error loading playlist:', error));
-  }
-
-  function parseM3U(content) {
-    var lines = content.split('\n');
-    var playlist = [];
-    var currentChannel = null;
-
-    lines.forEach(line => {
-      line = line.trim();
-      if (line.startsWith('#EXTINF:')) {
-        var channelInfo = line.split(',')[1];
-        currentChannel = {
-          name: channelInfo,
-          links: []
-        };
-      } else if (line && currentChannel) {
-        currentChannel.links.push({
-          name: 'Link',
-          url: line
-        });
-        playlist.push(currentChannel);
-        currentChannel = null;
-      }
-    });
-
-    var existingPlaylist = JSON.parse(localStorage.getItem('playlist') || '[]');
-    playlist = existingPlaylist.concat(playlist);
-    localStorage.setItem('playlist', JSON.stringify(playlist));
-    location.reload();
-  }
-
-  function loadPlaylist() {
-    var playlist = JSON.parse(localStorage.getItem('playlist') || '[]');
-    playlist.forEach(function (channel) {
-      var newChannel = document.createElement('div');
-      newChannel.classList.add('playlist-item');
-      newChannel.setAttribute('data-channel', channel.name);
-      var newChannelId = 'channel-' + new Date().getTime(); // Ensure unique ID
-      newChannel.innerHTML = `
-        <div style="flex-grow: 1;">
-          <a href="#" class="dropdown-toggle collapsed" data-toggle="collapse" data-target="#${newChannelId}-list" aria-expanded="false">
-            ${channel.name} (${channel.links.length} روابط)
-          </a>
-        </div>
-        <div>
-          <div class="edit-icon" onclick="editChannelName(this)">✏️</div>
-          <div class="add-icon" onclick="addLink(this)">➕</div>
-          <div class="delete-icon" onclick="deleteChannel(this)">❌</div>
-        </div>
-        <div class="collapse" id="${newChannelId}-list">
-          ${channel.links.map(link => `
-            <a href="#" class="list-group-item d-flex justify-content-between align-items-center" onclick="playVideo('${link.url}')">
-              <span class="link-name">${link.name}</span>
-              <span class="hidden-link">${link.url}</span>
-              <div>
-                <div class="edit-icon" onclick="editLinkName(this)">🖋️</div>
-                <div class="edit-icon" onclick="editLink(this)">🖋️</div>
-                <div class="delete-icon" onclick="deleteLink(this)">❎</div>
-              </div>
-            </a>
-          `).join('')}
-        </div>
-      `;
-      document.getElementById('playlist').appendChild(newChannel);
-    });
-    updateTotalLinks();
-  }
-
-  function updateTotalLinks() {
-    var totalLinks = 0;
-    document.querySelectorAll('.playlist-item .list-group-item').forEach(function () {
-      totalLinks++;
-    });
-    document.getElementById('total-links').innerText = 'مجموع الروابط: ' + totalLinks;
-  }
-
-  function clearAllChannels() {
-    if (confirm('هل أنت متأكد أنك تريد حذف جميع القنوات؟')) {
-      localStorage.removeItem('playlist');
-      location.reload();
+      };
+      reader.readAsText(file);
     }
-  }
+
+    function loadPlaylistFromUrl() {
+      var url = document.getElementById('playlistUrlInput').value;
+      fetch(url)
+        .then(response => response.text())
+        .then(data => {
+          if (url.endsWith('.json')) {
+            localStorage.setItem('playlist', data);
+            loadPlaylist();
+          } else if (url.endsWith('.m3u') || url.endsWith('.m3u8')) {
+            parseM3U(data);
+          }
+        })
+        .catch(error => console.error('Error loading playlist:', error));
+    }
+
+    function parseM3U(content) {
+      var lines = content.split('\n');
+      var playlist = [];
+      var currentChannel = null;
+
+      lines.forEach(line => {
+        line = line.trim();
+        if (line.startsWith('#EXTINF:')) {
+          var channelInfo = line.split(',')[1];
+          if (currentChannel && currentChannel.links.length > 0) {
+            playlist.push(currentChannel);
+          }
+          currentChannel = {
+            name: channelInfo,
+            links: []
+          };
+        } else if (line && !line.startsWith('#') && currentChannel) {
+          currentChannel.links.push({
+            name: 'Link ' + (currentChannel.links.length + 1),
+            url: line
+          });
+        }
+      });
+
+      if (currentChannel && currentChannel.links.length > 0) {
+        playlist.push(currentChannel);
+      }
+
+      var existingPlaylist = JSON.parse(localStorage.getItem('playlist') || '[]');
+      playlist = existingPlaylist.concat(playlist);
+      localStorage.setItem('playlist', JSON.stringify(playlist));
+      loadPlaylist();
+    }
+
+    function loadPlaylist() {
+      var playlist = JSON.parse(localStorage.getItem('playlist') || '[]');
+      var channelList = document.getElementById('channelList');
+      var fullPlaylist = document.getElementById('playlist');
+      
+      channelList.innerHTML = '';
+      fullPlaylist.innerHTML = '';
+      
+      playlist.forEach(function (channel, index) {
+        // إضافة القناة إلى قائمة القنوات
+        var channelItem = document.createElement('div');
+        channelItem.classList.add('channel-item');
+        
+        var channelHeader = document.createElement('a');
+        channelHeader.href = '#';
+        channelHeader.classList.add('list-group-item', 'list-group-item-action');
+        channelHeader.innerText = channel.name;
+        channelHeader.onclick = function(e) { 
+          e.preventDefault();
+          toggleChannelExpand(this);
+        };
+        channelItem.appendChild(channelHeader);
+        
+        var channelContent = document.createElement('div');
+        channelContent.classList.add('channel-content', 'collapse');
+        
+        channel.links.forEach(function(link, linkIndex) {
+          var linkItem = document.createElement('a');
+          linkItem.href = '#';
+          linkItem.classList.add('list-group-item', 'list-group-item-action', 'pl-4');
+          linkItem.innerText = link.name;
+          linkItem.onclick = function() { playVideo(link.url); };
+          channelContent.appendChild(linkItem);
+        });
+        
+        channelItem.appendChild(channelContent);
+        channelList.appendChild(channelItem);
+        
+        // إضافة القناة إلى قائمة التشغيل الكاملة
+        var newChannel = document.createElement('div');
+        newChannel.classList.add('playlist-item');
+        newChannel.setAttribute('data-channel', channel.name);
+        var newChannelId = 'channel-' + index;
+        newChannel.innerHTML = `
+          <div style="flex-grow: 1;">
+            <a href="#" class="dropdown-toggle collapsed" data-toggle="collapse" data-target="#${newChannelId}-list" aria-expanded="false">
+              ${channel.name} (${channel.links.length} روابط)
+            </a>
+          </div>
+          <div>
+            <div class="edit-icon" onclick="editChannelName(this)">✏️</div>
+            <div class="add-icon" onclick="addLink(this)">➕</div>
+            <div class="delete-icon" onclick="deleteChannel(this)">❌</div>
+          </div>
+          <div class="collapse" id="${newChannelId}-list">
+${channel.links.map(link => `
+              <a href="#" class="list-group-item d-flex justify-content-between align-items-center" onclick="playVideo('${link.url}')">
+                <span class="link-name">${link.name}</span>
+                <span class="hidden-link">${link.url}</span>
+                <div>
+                  <div class="edit-icon" onclick="editLinkName(this)">🖋️</div>
+                  <div class="edit-icon" onclick="editLink(this)">🖋️</div>
+                  <div class="delete-icon" onclick="deleteLink(this)">❎</div>
+                </div>
+              </a>
+            `).join('')}
+          </div>
+        `;
+        fullPlaylist.appendChild(newChannel);
+      });
+      updateTotalLinks();
+    }
+
+    function toggleChannelExpand(element) {
+      var content = element.nextElementSibling;
+      if (content.style.display === "block") {
+        content.style.display = "none";
+      } else {
+        content.style.display = "block";
+      }
+    }
+
+    function playFirstLink(channelIndex) {
+      var playlist = JSON.parse(localStorage.getItem('playlist') || '[]');
+      if (playlist[channelIndex] && playlist[channelIndex].links.length > 0) {
+        playVideo(playlist[channelIndex].links[0].url);
+      }
+    }
+
+    function togglePlaylist() {
+      var fullPlaylist = document.getElementById('fullPlaylist');
+      if (fullPlaylist.style.display === 'none') {
+        fullPlaylist.style.display = 'block';
+      } else {
+        fullPlaylist.style.display = 'none';
+      }
+    }
+
+    function updateTotalLinks() {
+      var totalLinks = 0;
+      document.querySelectorAll('.playlist-item .list-group-item').forEach(function () {
+        totalLinks++;
+      });
+      document.getElementById('total-links').innerText = 'مجموع الروابط: ' + totalLinks;
+    }
+
+    function clearAllChannels() {
+      if (confirm('هل أنت متأكد أنك تريد حذف جميع القنوات؟')) {
+        localStorage.removeItem('playlist');
+        loadPlaylist();
+      }
+    }
 
   function filterChannels() {
     var input = document.getElementById('searchInput');
     var filter = input.value.toLowerCase();
-    var channels = document.querySelectorAll('.playlist-item');
+    
+    // Filter channels in the channel list
+    var channelItems = document.querySelectorAll('#channelList .channel-item');
+    channelItems.forEach(function(channel) {
+      var channelName = channel.querySelector('.list-group-item').innerText.toLowerCase();
+      var links = channel.querySelectorAll('.channel-content .list-group-item');
+      var linkMatch = false;
+      links.forEach(function(link) {
+        var linkName = link.innerText.toLowerCase();
+        if (linkName.indexOf(filter) > -1) {
+          link.style.display = '';
+          linkMatch = true;
+        } else {
+          link.style.display = 'none';
+        }
+      });
+      if (channelName.indexOf(filter) > -1 || linkMatch) {
+        channel.style.display = '';
+      } else {
+        channel.style.display = 'none';
+      }
+    });
 
-    channels.forEach(function (channel) {
-      var channelName = channel.getAttribute('data-channel').toLowerCase();
-      if (channelName.indexOf(filter) > -1) {
+    // Filter channels in the full playlist
+    var playlistItems = document.querySelectorAll('#playlist .playlist-item');
+    playlistItems.forEach(function(channel) {
+      var channelName = channel.querySelector('.dropdown-toggle').innerText.toLowerCase();
+      var links = channel.querySelectorAll('.list-group-item');
+      var linkMatch = false;
+      links.forEach(function(link) {
+        var linkName = link.querySelector('.link-name').innerText.toLowerCase();
+        if (linkName.indexOf(filter) > -1) {
+          link.style.display = '';
+          linkMatch = true;
+        } else {
+          link.style.display = 'none';
+        }
+      });
+      if (channelName.indexOf(filter) > -1 || linkMatch) {
         channel.style.display = '';
       } else {
         channel.style.display = 'none';
@@ -579,19 +767,20 @@ video, audio, iframe {
     });
   }
 
-  function downloadPage() {
-    var htmlContent = document.documentElement.outerHTML;
-    var blob = new Blob([htmlContent], { type: 'text/html' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    var fileName = prompt('أدخل اسم الملف:', 'page.html');
-    if (fileName) {
-      a.href = url;
-      a.download = fileName;
-      a.click();
-      URL.revokeObjectURL(url);
+
+    function downloadPage() {
+      var htmlContent = document.documentElement.outerHTML;
+      var blob = new Blob([htmlContent], { type: 'text/html' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      var fileName = prompt('أدخل اسم الملف:', 'page.html');
+      if (fileName) {
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
     }
-  }
 
   document.addEventListener('DOMContentLoaded', function () {
     if (localStorage.getItem('darkMode') === 'true') {
@@ -603,8 +792,6 @@ video, audio, iframe {
     document.getElementById('clear-all').addEventListener('click', clearAllChannels);
   });
 </script>
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
 </body>
 </html>
