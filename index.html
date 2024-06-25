@@ -16,6 +16,7 @@
   <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
 /* استايل الجسم العام */
 body {
@@ -229,6 +230,15 @@ video, audio, iframe {
 .channel-content .list-group-item {
   padding: 5px 15px;
 }
+    
+#channelList .channel-content .list-group-item-action {
+    background-color: #2C3E50 !important; /* لون الخلفية الداكن للروابط المنسدلة */
+    color: #ECF0F1 !important; /* لون النص الفاتح للتباين */
+}
+
+#channelList .channel-content .list-group-item-action:hover {
+    background-color: #34495E !important; /* لون الخلفية عند التحويم */
+}
 
 /* استايل نص الفوتر */
 #footer-text {
@@ -248,25 +258,6 @@ video, audio, iframe {
   transform: translateY(20px);
 }
 
-        #channelList .list-group-item-action {
-            background-color: #007bff; /* اللون الأساسي للخلفية */
-            color: white; /* لون النص داخل الزر */
-        }
-
-        #channelList .list-group-item-action:hover {
-            background-color: #0056b3; /* اللون عند التمرير على الزر */
-        }
-
-        /* أنماط الأزرار في قائمة التشغيل الكاملة */
-        #playlist .list-group-item-action {
-            background-color: #28a745; /* اللون الأساسي للخلفية */
-            color: white; /* لون النص داخل الزر */
-        }
-
-        #playlist .list-group-item-action:hover {
-            background-color: #218838; /* اللون عند التمرير على الزر */
-        }
-
 /* تخصيص الخطوط */
 .custom-font {
   font-family: 'Arial', sans-serif;
@@ -284,11 +275,77 @@ video, audio, iframe {
 }
 
 /* تخصيص المودال */
-.modal-content {
-  background-color: #333; /* لون داكن لخلفية المودال */
-  color: white; /* لون النص داخل المودال */
+    .modal-content {
+  background-color: #f8f9fa;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  background-color: #71706e;
 }
 
+.modal-header {
+  background-color: #007bff;
+  color: white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: #757d75;
+}
+
+.modal-footer {
+  border-top: none;
+  background-color: #738678;
+
+}
+
+.card {
+  border: none;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  background-color: #282d29;
+}
+
+.card-header {
+  background-color: #f1f3f5;
+  font-weight: bold;
+  background-color: #3a423c;
+}
+
+.form-control[type="color"] {
+  height: 40px;
+  padding: 2px;
+}
+
+   .card .btn-primary {
+  width: 100%;
+}
+
+.modal-footer .btn-primary {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+} 
+    
+#channelList .list-group-item-action {
+    background-color: #1E3A5F; /* خلفية داكنة */
+    color: white; /* نص أبيض */
+}
+    
+#channelList .list-group-item-action:hover {
+    background-color: #2C5282; /* خلفية أفتح قليلاً عند التحويم */
+}
+
+/* أنماط قائمة التشغيل */
+#playlist .list-group-item-action {
+    background-color: #7272FF; /* خلفية داكنة مختلفة */
+    color: red; /* نص أبيض */
+}
+    
+#playlist .list-group-item-action:hover {
+    background-color: #4A5568; /* خلفية أفتح قليلاً عند التحويم */
+}
     
   </style>
 </head>
@@ -357,23 +414,22 @@ By Omar K H
   </div>
 <!-- Modal for editing elements -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="editModalLabel">ألوان ومحتويات الصفحة</h5>
+        <h5 class="modal-title" id="editModalLabel">تخصيص ألوان ومحتويات الصفحة</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div id="editElementsContainer">
-          <!-- إضافة هذا الجزء -->
-          <div class="form-group">
-          </div>
+        <div id="editElementsContainer" class="row">
+          <!-- سيتم إضافة العناصر هنا ديناميكياً -->
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">إغلاق</button>
+        <button type="button" class="btn btn-primary" onclick="saveAllChanges()">حفظ جميع التغييرات</button>
       </div>
     </div>
   </div>
@@ -890,24 +946,40 @@ function populateEditModal() {
     var colorId = `color-element-${index}`;
     var bgColorId = `bgcolor-element-${index}`;
     var saveButtonId = `save-button-${index}`;
-    container.innerHTML += `
-      <div class="form-group">
-        <label for="${elementId}">${elementType}: ${elementContent}</label>
-        <input type="text" class="form-control mb-2" id="${elementId}" value="${elementContent}">
-        <label for="${colorId}">تغيير لون الخط:</label>
-        <input type="color" class="form-control" id="${colorId}" value="#000000">
-        <label for="${bgColorId}">تغيير لون الخلفية:</label>
-        <input type="color" class="form-control" id="${bgColorId}" value="#ffffff">
-        <button class="btn btn-primary mt-2" id="${saveButtonId}" onclick="saveElementChanges('${index}')">حفظ التغييرات</button>
+    
+    var col = document.createElement('div');
+    col.className = 'col-md-6 mb-3';
+    col.innerHTML = `
+      <div class="card">
+        <div class="card-header">
+          ${elementType}: ${elementContent}
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="${elementId}">النص:</label>
+            <input type="text" class="form-control mb-2" id="${elementId}" value="${elementContent}">
+          </div>
+          <div class="form-group">
+            <label for="${colorId}">لون الخط:</label>
+            <input type="color" class="form-control" id="${colorId}" value="${getComputedStyle(element).color}">
+          </div>
+          <div class="form-group">
+            <label for="${bgColorId}">لون الخلفية:</label>
+            <input type="color" class="form-control" id="${bgColorId}" value="${getComputedStyle(element).backgroundColor}">
+          </div>
+          <button class="btn btn-primary mt-2" id="${saveButtonId}" onclick="saveElementChanges(${index})">حفظ التغييرات</button>
+        </div>
       </div>
     `;
+    container.appendChild(col);
+    
     element.dataset.editId = elementId;
     element.dataset.colorId = colorId;
     element.dataset.bgColorId = bgColorId;
     element.dataset.saveButtonId = saveButtonId;
   });
 }
-
+                   
 function saveElementChanges(index) {
   var element = document.querySelector(`[data-edit-id="edit-element-${index}"]`);
   var editId = element.dataset.editId;
@@ -929,9 +1001,15 @@ function saveElementChanges(index) {
   };
   localStorage.setItem('savedElements', JSON.stringify(savedElements));
 
-  $('#editModal').modal('hide');
+  // إظهار رسالة تأكيد
+  Swal.fire({
+    title: 'تم الحفظ!',
+    text: 'تم حفظ التغييرات بنجاح',
+    icon: 'success',
+    confirmButtonText: 'حسنا'
+  });
 }
-
+  
 function applySavedChanges() {
   var savedElements = JSON.parse(localStorage.getItem('savedElements') || '[]');
   savedElements.forEach(function(savedElement, index) {
@@ -944,8 +1022,43 @@ function applySavedChanges() {
   });
 }
   
- 
+function saveAllChanges() {
+  var elements = document.querySelectorAll('[data-edit-id]');
+  var savedElements = [];
+  
+  elements.forEach(function(element, index) {
+    var editId = element.dataset.editId;
+    var colorId = element.dataset.colorId;
+    var bgColorId = element.dataset.bgColorId;
+    
+    var newText = document.getElementById(editId).value;
+    var newColor = document.getElementById(colorId).value;
+    var newBgColor = document.getElementById(bgColorId).value;
 
+    element.innerText = newText;
+    element.style.color = newColor;
+    element.style.backgroundColor = newBgColor;
+
+    savedElements.push({
+      text: newText,
+      color: newColor,
+      bgColor: newBgColor,
+    });
+  });
+
+  localStorage.setItem('savedElements', JSON.stringify(savedElements));
+  
+  // إظهار رسالة تأكيد
+  Swal.fire({
+    title: 'تم الحفظ!',
+    text: 'تم حفظ جميع التغييرات بنجاح',
+    icon: 'success',
+    confirmButtonText: 'حسنا'
+  });
+
+  $('#editModal').modal('hide');
+}
+  
 document.addEventListener('DOMContentLoaded', function () {
   if (localStorage.getItem('darkMode') === 'true') {
     document.body.classList.add('dark-mode');
