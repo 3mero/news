@@ -294,6 +294,7 @@ video, audio, iframe {
 .modal-footer {
   border-top: none;
   background-color: #738678;
+       color: white;
 
 }
 
@@ -321,11 +322,13 @@ video, audio, iframe {
 .modal-footer .btn-primary {
   background-color: #28a745;
   border-color: #28a745;
+  color: white;
 }
 
 .modal-footer .btn-primary:hover {
   background-color: #218838;
   border-color: #1e7e34;
+  color: white;
 } 
     
 #channelList .list-group-item-action {
@@ -340,11 +343,43 @@ video, audio, iframe {
 /* أنماط قائمة التشغيل */
 #playlist .list-group-item-action {
     background-color: #7272FF; /* خلفية داكنة مختلفة */
-    color: red; /* نص أبيض */
+    color: white; /* نص أبيض */
 }
     
 #playlist .list-group-item-action:hover {
     background-color: #4A5568; /* خلفية أفتح قليلاً عند التحويم */
+}
+    
+    /* أنماط عامة للمودال */
+.modal-content {
+    color: white !important;
+}
+
+/* أنماط لعناصر المدخلات في المودال */
+.modal-content input[type="text"],
+.modal-content input[type="color"] {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* أنماط لبطاقات العناصر في المودال */
+.modal-content .card {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.modal-content .card-header {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    color: white !important;
+}
+
+/* أنماط للأزرار في المودال */
+.modal-content .btn {
+    color: white !important;
+}
+
+/* أنماط للتسميات في المودال */
+.modal-content label {
+    color: white !important;
 }
     
   </style>
