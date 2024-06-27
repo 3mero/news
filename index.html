@@ -34,6 +34,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+ .channel-list-container {
+  max-height: 400px;
+  overflow-y: auto;
+  position: relative;
+}
+
+.scroll-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.scroll-buttons button {
+  width: 48%;
+}
+    
 /* استايل الحاوية الرئيسية */
 .container {
   max-width: 1500px;
@@ -415,13 +431,16 @@ video, audio, iframe {
         </div>
         <div class="col-12 col-md-4 mt-4 mt-md-0">
           <div class="card mb-3">
-            <div class="card-header bg-primary text-white">
-              قائمة القنوات
-            </div>
-            <div id="channelList" class="list-group list-group-flush">
-              <!-- سيتم إضافة أسماء القنوات هنا -->
-            </div>
-          </div>
+  <div class="card-header bg-primary text-white">
+    قائمة القنوات
+  </div>
+  <div class="channel-list-container list-group list-group-flush" id="channelList">
+    <!-- سيتم إضافة أسماء القنوات هنا -->
+  </div>
+  <div class="scroll-buttons">
+  </div>
+</div>
+
           <button class="btn btn-secondary mt-2" onclick="togglePlaylist()">إظهار/إخفاء قائمة التشغيل الكاملة</button>
           <div id="fullPlaylist" style="display:none;">
             <div class="card mt-3">
@@ -1093,6 +1112,17 @@ function saveAllChanges() {
 
   $('#editModal').modal('hide');
 }
+  
+function scrollChannelList(direction) {
+  var channelListContainer = document.getElementById('channelList');
+  if (direction === 'up') {
+    channelListContainer.scrollTop -= 100; // يمكنك تعديل هذه القيمة حسب رغبتك
+  } else if (direction === 'down') {
+    channelListContainer.scrollTop += 100; // يمكنك تعديل هذه القيمة حسب رغبتك
+  }
+}
+
+
   
 document.addEventListener('DOMContentLoaded', function () {
   if (localStorage.getItem('darkMode') === 'true') {
